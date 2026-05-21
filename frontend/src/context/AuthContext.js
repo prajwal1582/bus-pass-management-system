@@ -1,6 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
-axios.defaults.baseURL = 'http://localhost:5000';
+// Do NOT set a hardcoded baseURL here.
+// In development, package.json "proxy" forwards /api/* to localhost:5000.
+// In production (Docker), nginx proxies /api/* to the backend container.
+// Relative URLs like '/api/auth/login' work correctly in both environments.
 
 const AuthContext = createContext();
 
