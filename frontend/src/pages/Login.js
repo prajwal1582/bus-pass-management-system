@@ -51,9 +51,20 @@ export default function Login() {
           <div style={{ textAlign: 'center', marginTop: 15 }}>
             <button
               className="btn btn-outline btn-small"
-              onClick={() => setForm({ email: 'admin@buspass.com', password: 'admin123' })}
+              onClick={async () => {
+                const adminForm = { email: 'admin@buspass.com', password: 'admin123' };
+                setForm(adminForm);
+                setError(''); setLoading(true);
+                try {
+                  const { data } = await axios.post('/api/auth/login', adminForm);
+                  login(data);
+                } catch (err) {
+                  setError(err.response?.data?.message || 'Login failed');
+                }
+                setLoading(false);
+              }}
             >
-              🛡️ Fill Admin Credentials
+              🛡️ Login as Admin
             </button>
           </div>
         </div>
