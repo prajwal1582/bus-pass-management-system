@@ -38,7 +38,11 @@ pipeline {
         stage('Stop Old Containers') {
             steps {
                 echo '==> Stopping running containers...'
-                sh 'docker compose down --remove-orphans || true'
+                sh '''
+                    docker compose down --remove-orphans || true
+                    docker stop buspass-mongo buspass-backend buspass-frontend 2>/dev/null || true
+                    docker rm buspass-mongo buspass-backend buspass-frontend 2>/dev/null || true
+                '''
             }
         }
 
