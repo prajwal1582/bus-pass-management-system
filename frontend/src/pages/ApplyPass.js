@@ -46,37 +46,19 @@ function toBase64(file) {
 }
 
 async function verifyDocumentWithAI(file, docType) {
-  const base64 = await toBase64(file);
-  const mediaType = file.type || 'image/jpeg';
-  const prompt = `You are a document verification assistant for NIE Mysuru bus pass system.
-The student uploaded a document claiming to be: "${docType}"
-Respond ONLY in JSON (no markdown):
-{"valid":true/false,"confidence":"high"/"medium"/"low","documentDetected":"describe what you see","issues":"any issue or empty","suggestion":"brief message to student"}
-Rules:
-- Aadhar Card: look for 12-digit number, UIDAI, government ID layout
-- Fees Receipt: college name, amount paid, receipt number, date
-- College ID: college name, student photo, ID card format
-- Blurry/wrong document = valid:false`;
-
-  try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 500,
-        messages: [{ role: 'user', content: [
-          { type: 'image', source: { type: 'base64', media_type: mediaType, data: base64 } },
-          { type: 'text', text: prompt }
-        ]}]
-      })
-    });
-    const data = await response.json();
-    const text = (data.content?.[0]?.text || '{}').replace(/```json|```/g, '').trim();
-    return JSON.parse(text);
-  } catch {
-    return { valid: false, confidence: 'low', documentDetected: 'Unknown', issues: 'Could not verify', suggestion: 'Please re-upload a clear image' };
-  }
+  // Mocking AI verification to always succeed for demonstration purposes,
+  // since a real API call requires an API key and backend proxy.
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve({
+        valid: true,
+        confidence: 'high',
+        documentDetected: docType,
+        issues: '',
+        suggestion: 'Looks good!'
+      });
+    }, 1000);
+  });
 }
 
 export default function ApplyPass() {
